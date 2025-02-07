@@ -7,6 +7,10 @@
 
 **The Prototype** is a search engine specifically designed to navigate and retrieve legal data from German law texts and textbooks. It uses a combination of **React (Vite)** for the frontend, **NestJS** for the backend API, **Neo4j** as a graph database to store legal relationships, and **Elasticsearch** to index and perform searches on legal documents. Additionally, a **lemmatizer** service is integrated for linguistic processing.
 
+## Data and Experiments
+- In the subfolder [load-data-scripts](load-data-scripts), we have some documentation on how to obtain the German legal data and how they can be loaded into Neo4j.
+- The subfolder [evaluation](evaluation) contains information about the usability test results, as well as the human vs. AI comparison.
+
 ## Prerequisites
 
 - [Docker](https://www.docker.com/get-started)
