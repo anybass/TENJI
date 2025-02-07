@@ -3,7 +3,7 @@
 """
 Created on Mon Jul 22 01:09:09 2024
 
-@author: sabine
+
 """
 
 import os

@@ -1,0 +1,29 @@
+#Add neo4j repo
+wget -O - https://debian.neo4j.com/neotechnology.gpg.key | sudo apt-key add -
+echo 'deb https://debian.neo4j.com stable 4.4' | sudo tee /etc/apt/sources.list.d/neo4j.list
+
+#update packages
+sudo apt-get update
+
+#install neo4j
+sudo apt-get install neo4j
+
+#start neo4j
+sudo systemctl start neo4j
+
+#optional: enable neo4j to start on boot
+sudo systemctl enable neo4j
+
+#open neo4j in a browser
+http://localhost:7474
+
+#set up password
+for the neo4j user, default is user: neo4j pw: neo4j
+in our scripts we use the pw: password
+If you want to use another one, you need to adjust the scripts.
+
+#before running a python script that uses neo4j, ensure it is running
+sudo systemctl status neo4j
+
+#install neo4j python driver
+pip install neo4j

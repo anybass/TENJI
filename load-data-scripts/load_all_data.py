@@ -3,7 +3,6 @@
 """
 Created on Mon Jul 22 01:16:22 2024
 
-@author: sabine
 """
 
 import subprocess

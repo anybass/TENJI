@@ -1,0 +1,109 @@
+Deine Aufgabe ist es, einen Cypher-Query zu generieren, der relevante Daten aus einer Neo4j-Datenbank abruft. Die Datenbank enthält Artikel des Grundgesetzes, Bundesverfassungsgerichtsfälle, Verweise in Lehrbüchern und Inhaltsverzeichnisabschnitte. 
+
+    Frage: {question}
+
+Die Daten aus der Neo4j-Datenbank enthalten verschiedene Knoten (Nodes), die miteinander verbunden sind. Hier sind die relevanten Knoten, ihre Attribute und die Beziehungen zwischen ihnen:
+
+1. **Article (Artikel des Grundgesetzes)**:
+   - `number`: Die Artikelnummer (wichtig: hier werden keine Paragraphen gematched, die mit römischen Zahlen angegeben werden, nur die Artikelnummer als String). Gegebenenfalls hat der Artikel auch eine Bezeichnung oder einen Namen, den man über die Beziehung zur Node Name herausfinden kann.
+   - `text`: Der vollständige Text des Artikels
+   - `resource`: Die Quelle des Gesetzes, z.B. "GG". Sollte bei Abfragen von Artikelnummern auch immer mit ausgegeben werden.
+   - `total_case_citations`: Anzahl der Zitationen dieses Artikels in anderen Fällen
+   - `citing_cases`: Anzahl der einzigartigen Fälle, die diesen Artikel zitieren
+
+   Beispiel:
+   - `number`: "5"
+   - `text`: "(1) Jeder hat das Recht, seine Meinung in Wort, Schrift und Bild frei zu äußern und zu verbreiten... "
+   - `resource`: "GG"
+   - `total_case_citations`: "2602"
+   - `citing_cases`: "272"
+
+2. **Case (Bundesverfassungsgerichtsfälle)**:
+     - `id`: Aktenzeichen des Falls, wird in der Regel nicht als Antwort ausgegeben
+     - `bverfge_references`: Verweise auf andere Bundesverfassungsgerichtsfälle
+     - `citing_cases`: Anzahl der einzigartigen Fälle, die diesen Fall zitieren
+     - `decision_type`: Der Typ der Entscheidung
+     - `facts`: Fakten des Falls (Kurzbeschreibung)
+     - `gg_references`: Verweise auf Artikel des Grundgesetzes (z.B. "Art. 19 GG")
+     - `headnotes`: Leitsätze, die die wesentlichen rechtlichen Prinzipien und Entscheidungen zusammenfassen
+     - `judgment`: Die Entscheidung des Falls
+     - `number`: Referenznummer des Falls (z.B. BVerfGE100,226). Wichtig: keine Leerzeichen einbauen. Ist oft eine bessere Antwort als das Aktenzeichen aus dem id Attribut. Gegebenenfalls hat der Fall auch einen Namen, den man über die Beziehung zu Name herausfinden kann.
+     - `panel_of_judges`: Das Gerichtspanel, das den Fall entschieden hat
+     - `reasoning`: Begründung der Entscheidung, enthält auch Verweise zu Gesetzen und zu anderen Entscheidungen
+     - `total_case_citations`: Gesamtzahl der Zitationen dieses Falls in anderen Fällen
+     - `year`: Jahr der Entscheidung
+
+   Beispiel:
+   - `id`: "2 BvR 552/63"
+   - `bverfge_references`: "BVerfGE18,85;BVerfGE5,9;BVerfGE10,234"
+   - `decision_type`: "Beschluss"
+   - `facts`: "A.-I. 1. Der Beschwerdeführer wurde vom Amtsgericht Ingolstadt zu einer Freiheitsstrafe verurteilt..."
+   - `gg_references`: "19;101;19;60"
+   - `headnotes`: "Zur Frage der Justiziabilität von Gnadenentscheidungen (Art. 19 Abs. 4 GG)"
+   - `judgment`: "Die Verfassungsbeschwerde wird zurückgewiesen"
+   - `number`: "BVerfGE25,352"
+   - `panel_of_judges`: "II"
+   - `reasoning`: "Gegen die Zulässigkeit der Verfassungsbeschwerde bestehen keine Bedenken..."
+   - `total_case_citations`: "6"
+   - `year`: "1969"
+
+3. **TOC (Table of Contents)**:
+   - `id`: Eine ID, die den Knoten innerhalb der TOC-Hierarchie identifiziert
+   - `text`: Die Abschnittsüberschrift (z.B. "Grundrechte und ihre Einschränkungen"). 
+   - `next_toc`: Verweist auf das übergeordnete TOC, das diesen Abschnitt enthält
+   - `weblink`: Ein Link zu dem jeweiligen Abschnitt online
+
+   Beispiel:
+   - `id`: "Grundrechte-Klausur-und-Examenswissen > Abschnitt 2 Aufbau der Prüfung eines Freiheitsgrundrechts > § 5 Schutzbereich & Eingriff"
+   - `text`: "§ 5 Schutzbereich & Eingriff"
+   - `next_toc`: "Grundrechte-Klausur-und-Examenswissen > Abschnitt 2 Aufbau der Prüfung eines Freiheitsgrundrechts"
+   - `weblink`: "https://de.wikibooks.org/wiki/OpenRewi/_Grundrechte-Lehrbuch/_Pr%C3%BCfung_Freiheitsgrundrecht/_Schutzbereich_%26_Eingriff"
+
+4. **Reference (Verweise in Lehrbüchern)**:
+   - `id`: Verweist auf das TOC, zu dem diese Referenz gehört
+   - `context`: Der Kontext, in dem ein Artikel oder Fall erwähnt wird (z.B. "Eigentum, Erbrecht und Sozialisierung in den Art. 14, 15 GG")
+   - `text`: Der zitierte Text (z.B. "Art. 14, 15 GG"). Nicht jede Referenz kann einem Artikel oder Fall in der Datenbank zugeordnet werden. Manchmal kann man direkt diesen Attributwert text verwenden, um auf das Ziel zu verweisen.
+   - `resource`: Die Quelle, die zitiert wird, z.B. GG (Grundgesetz) oder BVerfGE (Bundesverfassungsgericht)
+   - `next_toc`: Verweist auf das TOC einer Ebene über dem aktuellen TOC dieser Referenz 
+
+   Beispiel:
+   - `id`: "Grundrechte-Klausur-und-Examenswissen > Abschnitt 1 Allgemeine Grundrechtslehren > § 1 Grundrechtsfunktionen"
+   - `context`: "Landesgrundrechte, die im Widerspruch zum Grundgesetz stehen, können nach Art. 31 GG keine Geltung beanspruchen.",
+   - `text`: "Art. 31 GG",
+   - `resource`: "GG",
+   - `next_toc`: "Grundrechte-Klausur-und-Examenswissen > Abschnitt 1 Allgemeine Grundrechtslehren",
+
+5. **Name:
+   - `id`:  Fallnummer bzw. Artikelnummer
+   - `short`: Bezeichnung / Name / Titel des Artikels oder des Falls, kann auch aus mehreren Worten bestehen. Achtung: Nicht alle Artikel oder Fälle sind mit einem Namen verbunden, der Großteil der Article / Case Nodes hat keinen Namen.
+   - `type`: article oder case
+      
+   Beispiel:
+   - `id`: "11"
+   - `short`: "Freizügigkeitsrecht"
+   - `type`: "article"
+
+**Beziehungen zwischen den Knoten:**
+1. **CITES**: Ein Artikel verweist auf einen anderen Artikel.
+   Article -> Article
+   - Beispiel: Artikel 5 GG zitiert Artikel 6 GG.
+2. **IS_NAMED**: Ein Fall oder Artikel wird einem Namen zugewiesen.
+   Case -> Name
+   Article -> Name
+   - Beispiel: Fall 2 BvR 552/63 wird als "Denkmalschutz" bezeichnet.
+3. **MENTIONS**: Ein Referenzknoten verweist auf einen Artikel oder Fall.
+   Reference -> Article
+   Reference -> Case
+   - Beispiel: Ein Lehrbuchzitat erwähnt Artikel 19 GG oder Fall BVerfGE 100,226.
+4. **PART_OF**: Eine Referenz gehört zu einem Abschnitt im Inhaltsverzeichnis (TOC) oder ein TOC-Knoten ist Teil eines übergeordneten TOC-Knotens.
+   Reference -> TOC
+   TOC -> TOC
+   - Beispiel: Referenz zu Artikel 19 GG ist Teil des TOC "Grundrechte".
+5. **REFERS_TO**: Ein Fall verweist auf einen anderen Fall oder auf Artikel des Grundgesetzes.
+   Case -> Case
+   Case -> Article
+   - Beispiel: Fall BVerfGE 100,226 verweist auf Fall BVerfGE 85,72 oder Artikel 5 GG.
+
+    Dein Cypher-Query sollte auf den Knoten und Beziehungen basieren, die in diesem Kontext vorkommen. Der Query soll die benötigten Informationen zurückgeben. Wenn Informationen von Case Knoten abgefragt werden, dann muss die Case.number zur späteren Identifikation immer mit abgefragt werden. Bitte gebe als Antwort nur die Query aus ohne weitere Erläuterungen. Nutze für Attribute keine Aliase und formuliere nur eine Query.
+
+    Cypher-Query:

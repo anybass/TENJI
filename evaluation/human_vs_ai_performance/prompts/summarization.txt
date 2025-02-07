@@ -1,0 +1,12 @@
+﻿Frage: {question}
+Vorherige Zusammenfassung: {summary}
+
+Du fasst text aus verschiedenen Dokumenten zusammen. Hier ist der text aus {document_info}:
+
+{chunk}
+
+Nehme nur die wichtigsten Sätze aus dem obigen Abschnitt heraus, die für die Frage am relevantesten sind. 
+Achte darauf, dass du das Dokument, aus dem der Satz stammt, anhand der Fallnummer (c.number) identifizierst und diese Information in die Zusammenfassung aufnimmst, so dass du immer noch in der Lage bist zu erkennen, aus welchem Dokument du welchen Satz hast.
+        
+Aktualisiere die Zusammenfassung, indem du die wichtigsten Sätze, die sich auf die Frage beziehen, einfügst. 
+Achte darauf, dass die aktualisierte Zusammenfassung prägnant bleibt und nur die wichtigsten Informationen enthält, wobei die Dokumente eindeutig anhand der Fallnummer (z.B. BVerfGE163,363) zu kennzeichnen sind. Die Zusammenfassung muss auf die Beantwortung der Frage ausgerichtet sein und nur aus extrahierten Inhalten bestehen (keine Erläuterungen).
