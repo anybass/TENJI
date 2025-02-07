@@ -2,7 +2,6 @@ import os
 import re
 import csv
 import traceback
-from collections import defaultdict
 from neo4j import GraphDatabase
 
 def parse_toc_weblink(file):
@@ -33,7 +32,6 @@ def parse_tb(directory):
                 toc0 = filename.strip(".csv")
                 
                 # Get the maximum depth TOC value
-                max_depth_toc = next((toc for toc in toc_levels if toc), None)
                 toc_hierarchy = [toc for toc in [toc0] + toc_levels if toc]
                 
                 # Create reference_data node
@@ -98,6 +96,7 @@ class LegalGraph:
                     weblink=toc["weblink"]
                 )
             except Exception as e:
+                print(e)
                 traceback.print_exc()
                 print(toc)
 
@@ -159,7 +158,7 @@ def main():
     # Connect to Neo4j
     uri = "bolt://localhost:7687"  # Adjust the URI if needed
     user = "neo4j"
-    password = "huhontow"  # Use your actual Neo4j password
+    password = "ENTER_YOUR_PASSWORD"  # Use your actual Neo4j password
     graph = LegalGraph(uri, user, password)
     
     # Create TOC nodes

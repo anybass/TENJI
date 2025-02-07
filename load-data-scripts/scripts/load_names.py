@@ -85,7 +85,7 @@ def main():
     # Connect to Neo4j
     uri = "bolt://localhost:7687"  # Adjust the URI if needed
     user = "neo4j"
-    password = "huhontow"  # Use your actual Neo4j password
+    password = "ENTER_YOUR_PASSWORD"  # Use your actual Neo4j password
     graph = LegalGraph(uri, user, password)
     
     # Create Name nodes and IS_NAMED relationships

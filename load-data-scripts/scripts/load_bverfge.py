@@ -3,7 +3,6 @@
 """
 Created on Mon Jul 22 01:09:09 2024
 
-
 """
 
 import os
@@ -178,7 +177,7 @@ def parse_bverfg(bverfg_directory, valid_filenames):
                             case_text_reasoning.append(paragraph_text)
 
                         # Extract references to GG articles using regex
-                       for ref in ref_pattern.findall(paragraph_text):
+                        for ref in ref_pattern.findall(paragraph_text):
                             gg_references.append(ref[0])
                         for ref in bverfg_pattern.findall(paragraph_text):
                             bverfge_references.append(ref.replace(" ", ""))
@@ -190,11 +189,6 @@ def parse_bverfg(bverfg_directory, valid_filenames):
                     for ref in bverfg_pattern.findall(headnote_text):
                         bverfge_references.append(ref.replace(" ", ""))
 
-                # Define a regular expression pattern to match the format
-                pattern = r'BVerfGE(\d+),(\d+)'
-
-                # Use re.sub() to replace the leading zeros after the comma
-                modified_string = re.sub(pattern, lambda m: f"BVerfGE{m.group(1)},{int(m.group(2))}", filename.rstrip(".xml"))
 
                 cases.append({
                     'id': case_id,
@@ -347,7 +341,7 @@ def main():
     # Connect to Neo4j
     uri = "bolt://localhost:7687"  # Adjust the URI if needed
     user = "neo4j"
-    password = "huproject"  # Use your actual Neo4j password
+    password = "ENTER_YOUR_PASSWORD"  # Use your actual Neo4j password
     graph = LegalGraph(uri, user, password)
     
     # Create Case nodes and Reference relationships

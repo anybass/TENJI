@@ -87,7 +87,7 @@ def main():
     # Connect to Neo4j
     uri = "bolt://localhost:7687"  # Adjust the URI if needed
     user = "neo4j"
-    password = "huproject"  # Use your actual Neo4j password
+    password = "ENTER_YOUR_PASSWORD"  # Use your actual Neo4j password
     graph = GrundgesetzGraph(uri, user, password)
     
     # Create Article nodes
