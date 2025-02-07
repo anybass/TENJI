@@ -7,7 +7,7 @@ You will need the following files / folders:
 - names_articles.csv (provided in the repo)
 - names_cases.csv (provided in the repo)
 - Metadaten2.7.1.csv: A file containing metadata about the legal cases for correct mapping of their reference numbers and the filenames of the cases
-
+- textbooks: This folder contains the textbook PDFs, extracted information from the textbooks, as well as files mapping textbook sections to the URLs of the respective Wikibook section
 
 Load all data at once:
 
